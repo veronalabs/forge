@@ -41,29 +41,28 @@ ask() {
     echo "${result:-$default}"
 }
 
-# Derive slug from name: "WP Analytics" → "wp-analytics"
-to_slug() {
-    echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//'
+# Lowercase + replace non-alphanumeric with separator, collapse, trim
+to_separated() {
+    local sep="$2"
+    echo "$1" | tr '[:upper:]' '[:lower:]' \
+        | sed "s/[^a-z0-9]/${sep}/g" \
+        | sed "s/${sep}${sep}*/${sep}/g" \
+        | sed "s/^${sep}//;s/${sep}$//"
 }
 
-# Derive namespace from name: "WP Analytics" → "WPAnalytics"
+to_slug() { to_separated "$1" "-"; }
+to_hook() { to_separated "$1" "_"; }
+
 to_namespace() {
     echo "$1" | sed 's/[^a-zA-Z0-9 ]//g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)}1' | tr -d ' '
 }
 
-# Derive constant prefix from name: "WP Analytics" → "WP_ANALYTICS"
 to_prefix() {
     echo "$1" | tr '[:lower:]' '[:upper:]' | sed 's/[^A-Z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_//;s/_$//'
 }
 
-# Derive short handle from name: "WP Analytics" → "wpanalytics"
 to_short() {
     echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]//g'
-}
-
-# Derive hook prefix from name: "WP Analytics" → "wp_analytics"
-to_hook() {
-    echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_//;s/_$//'
 }
 
 # Derive JS global variable: "WP Analytics" → "wpAnalyticsSettings"
@@ -153,37 +152,46 @@ echo -e "${GREEN}Configuring...${NC}"
 
 # ─── Replace placeholders ───────────────────────────────────────────
 
-# Escape special characters for sed
-SED_PLUGIN_URI=$(printf '%s\n' "$PLUGIN_URI" | sed 's/[&/\]/\\&/g')
-SED_PLUGIN_DESCRIPTION=$(printf '%s\n' "$PLUGIN_DESCRIPTION" | sed 's/[&/\]/\\&/g')
+# Escape special characters for sed replacement strings
+sed_escape() { printf '%s\n' "$1" | sed 's/[&/\]/\\&/g'; }
 
-# Find all template files (excluding .git, node_modules, vendor)
-FILES=$(find . -type f \
+SED_PLUGIN_NAME=$(sed_escape "$PLUGIN_NAME")
+SED_PLUGIN_SLUG=$(sed_escape "$PLUGIN_SLUG")
+SED_PLUGIN_NAMESPACE=$(sed_escape "$PLUGIN_NAMESPACE")
+SED_PLUGIN_PREFIX=$(sed_escape "$PLUGIN_PREFIX")
+SED_PLUGIN_SHORT=$(sed_escape "$PLUGIN_SHORT")
+SED_PLUGIN_HOOK=$(sed_escape "$PLUGIN_HOOK")
+SED_PLUGIN_JS_GLOBAL=$(sed_escape "$PLUGIN_JS_GLOBAL")
+SED_PLUGIN_DESCRIPTION=$(sed_escape "$PLUGIN_DESCRIPTION")
+SED_PLUGIN_VERSION=$(sed_escape "$PLUGIN_VERSION")
+
+# Replace {{}} placeholders in all text files (extension allowlist)
+while IFS= read -r file; do
+    case "$file" in
+        *.php|*.js|*.jsx|*.ts|*.tsx|*.json|*.xml|*.txt|*.md|*.css|*.scss|*.yaml|*.yml|*.mjs|*.html) ;;
+        *) continue ;;
+    esac
+    sed -i '' \
+        -e "s/{{PLUGIN_NAME}}/${SED_PLUGIN_NAME}/g" \
+        -e "s/{{PLUGIN_SLUG}}/${SED_PLUGIN_SLUG}/g" \
+        -e "s/{{PLUGIN_NAMESPACE}}/${SED_PLUGIN_NAMESPACE}/g" \
+        -e "s/{{PLUGIN_PREFIX}}/${SED_PLUGIN_PREFIX}/g" \
+        -e "s/{{PLUGIN_SHORT}}/${SED_PLUGIN_SHORT}/g" \
+        -e "s/{{PLUGIN_HOOK}}/${SED_PLUGIN_HOOK}/g" \
+        -e "s/{{PLUGIN_JS_GLOBAL}}/${SED_PLUGIN_JS_GLOBAL}/g" \
+        -e "s/{{PLUGIN_DESCRIPTION}}/${SED_PLUGIN_DESCRIPTION}/g" \
+        -e "s|{{PLUGIN_URI}}|${PLUGIN_URI}|g" \
+        -e "s/{{PLUGIN_VERSION}}/${SED_PLUGIN_VERSION}/g" \
+        -e "s/{{VITE_PORT}}/${VITE_PORT}/g" \
+        -e "s/{{MIN_WP}}/${MIN_WP}/g" \
+        -e "s/{{MIN_PHP}}/${MIN_PHP}/g" \
+        "$file" 2>/dev/null || true
+done < <(find . -type f \
     -not -path './.git/*' \
     -not -path './node_modules/*' \
     -not -path './vendor/*' \
     -not -path './packages/*' \
     -not -name 'configure')
-
-for file in $FILES; do
-    if file "$file" | grep -qE 'text|JSON|XML'; then
-        sed -i '' \
-            -e "s/{{PLUGIN_NAME}}/${PLUGIN_NAME}/g" \
-            -e "s/{{PLUGIN_SLUG}}/${PLUGIN_SLUG}/g" \
-            -e "s/{{PLUGIN_NAMESPACE}}/${PLUGIN_NAMESPACE}/g" \
-            -e "s/{{PLUGIN_PREFIX}}/${PLUGIN_PREFIX}/g" \
-            -e "s/{{PLUGIN_SHORT}}/${PLUGIN_SHORT}/g" \
-            -e "s/{{PLUGIN_HOOK}}/${PLUGIN_HOOK}/g" \
-            -e "s/{{PLUGIN_JS_GLOBAL}}/${PLUGIN_JS_GLOBAL}/g" \
-            -e "s/{{PLUGIN_DESCRIPTION}}/${SED_PLUGIN_DESCRIPTION}/g" \
-            -e "s|{{PLUGIN_URI}}|${PLUGIN_URI}|g" \
-            -e "s/{{PLUGIN_VERSION}}/${PLUGIN_VERSION}/g" \
-            -e "s/{{VITE_PORT}}/${VITE_PORT}/g" \
-            -e "s/{{MIN_WP}}/${MIN_WP}/g" \
-            -e "s/{{MIN_PHP}}/${MIN_PHP}/g" \
-            "$file" 2>/dev/null || true
-    fi
-done
 
 echo -e "  ${GREEN}✓${NC} Replaced placeholders"
 

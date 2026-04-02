@@ -27,17 +27,17 @@ class View
         }
 
         foreach ($views as $v) {
-            $path = {{PLUGIN_PREFIX}}_DIR . "views/{$v}.php";
+            $__path = {{PLUGIN_PREFIX}}_DIR . "views/{$v}.php";
 
-            if (!file_exists($path)) {
+            if (!file_exists($__path)) {
                 continue;
             }
 
             if (!empty($args)) {
-                extract($args);
+                extract($args, EXTR_SKIP);
             }
 
-            include $path;
+            include $__path;
         }
 
         if ($return) {

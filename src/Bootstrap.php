@@ -20,9 +20,6 @@ class Bootstrap
     /** @var bool Whether the plugin has already been initialized. */
     private static bool $initialized = false;
 
-    /** @var ServiceContainer|null Cached container instance. */
-    private static ?ServiceContainer $container = null;
-
     /** @var array<class-string<\{{PLUGIN_NAMESPACE}}\Container\ServiceProvider>> Service providers to register. */
     private static array $providers = [
         CoreServiceProvider::class,
@@ -77,11 +74,7 @@ class Bootstrap
      */
     public static function container(): ServiceContainer
     {
-        if (self::$container === null) {
-            self::$container = ServiceContainer::getInstance();
-        }
-
-        return self::$container;
+        return ServiceContainer::getInstance();
     }
 
     /**

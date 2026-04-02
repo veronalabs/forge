@@ -38,8 +38,8 @@ class AdminManager
         // Remove the auto-generated submenu item matching the parent.
         remove_submenu_page(self::MENU_SLUG, self::MENU_SLUG);
 
-        // Fire filter so add-ons can hook into menu data.
-        apply_filters('{{PLUGIN_HOOK}}_admin_menu_list', []);
+        // Fire action so add-ons can register submenus.
+        do_action('{{PLUGIN_HOOK}}_admin_menu');
     }
 
     /**

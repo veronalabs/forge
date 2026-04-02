@@ -15,20 +15,29 @@ class ViteHelper
     /**
      * Read and decode the Vite manifest file.
      *
+     * Cached per-request to avoid repeated disk reads.
+     *
      * @return array|null Decoded manifest array, or null on failure.
      */
     public static function readManifest(): ?array
     {
-        $manifestPath = {{PLUGIN_PREFIX}}_DIR . 'public/app/.vite/manifest.json';
+        static $cache = null;
 
-        if (!file_exists($manifestPath)) {
+        if ($cache !== null) {
+            return $cache === false ? null : $cache;
+        }
+
+        $content = @file_get_contents({{PLUGIN_PREFIX}}_DIR . 'public/app/.vite/manifest.json');
+
+        if ($content === false) {
+            $cache = false;
             return null;
         }
 
-        $content = file_get_contents($manifestPath);
         $manifest = json_decode($content, true);
+        $cache = is_array($manifest) ? $manifest : false;
 
-        return is_array($manifest) ? $manifest : null;
+        return $cache === false ? null : $cache;
     }
 
     /**

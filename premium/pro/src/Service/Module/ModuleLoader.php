@@ -78,13 +78,7 @@ class ModuleLoader
             return true;
         }
 
-        $manifestPath = $dir . '/manifest.json';
-
-        if (!file_exists($manifestPath)) {
-            return false;
-        }
-
-        $manifest = $this->loadManifest($manifestPath);
+        $manifest = $this->loadManifest($dir . '/manifest.json');
 
         if (empty($manifest)) {
             return false;
@@ -170,7 +164,12 @@ class ModuleLoader
             return $this->manifests[$path];
         }
 
-        $content = file_get_contents($path);
+        $content = @file_get_contents($path);
+
+        if ($content === false) {
+            return [];
+        }
+
         $manifest = json_decode($content, true);
 
         if (!is_array($manifest)) {
