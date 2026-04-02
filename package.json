@@ -1,0 +1,27 @@
+{
+  "name": "{{PLUGIN_SLUG}}",
+  "version": "{{PLUGIN_VERSION}}",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:scripts\" \"npm run dev:sass\"",
+    "dev:dashboard": "vite",
+    "dev:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs --watch",
+    "dev:sass": "sass --watch resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css",
+    "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass",
+    "build:dashboard": "vite build",
+    "build:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs && ENTRY=frontend vite build -c vite.config.entries.mjs",
+    "build:sass": "sass resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css --style=compressed --no-source-map",
+    "build:pot": "wp i18n make-pot . public/languages/{{PLUGIN_SLUG}}.pot --slug={{PLUGIN_SLUG}} --domain={{PLUGIN_SLUG}}"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.0",
+    "concurrently": "^9.1.0",
+    "sass": "^1.83.0",
+    "vite": "^6.2.0"
+  }
+}

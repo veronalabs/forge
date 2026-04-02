@@ -1,0 +1,27 @@
+{
+  "name": "veronalabs/{{PLUGIN_SLUG}}-premium",
+  "description": "Premium features for {{PLUGIN_NAME}}",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "VeronaLabs",
+      "email": "dev@veronalabs.com",
+      "homepage": "https://veronalabs.com"
+    }
+  ],
+  "require": {
+    "php": ">={{MIN_PHP}}"
+  },
+  "autoload": {
+    "psr-4": {
+      "{{PLUGIN_NAMESPACE}}\\Pro\\": "pro/src/"
+    }
+  },
+  "config": {
+    "platform-check": false,
+    "platform": {
+      "php": "{{MIN_PHP}}"
+    }
+  }
+}

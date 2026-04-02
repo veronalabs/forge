@@ -1,0 +1,53 @@
+{
+  "name": "veronalabs/forge",
+  "description": "{{PLUGIN_DESCRIPTION}}",
+  "type": "project",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "VeronaLabs",
+      "email": "dev@veronalabs.com",
+      "homepage": "https://veronalabs.com"
+    }
+  ],
+  "require": {
+    "php": ">={{MIN_PHP}}"
+  },
+  "require-dev": {
+    "veronalabs/wp-scoper": "^1.2.4",
+    "fakerphp/faker": "^1.23",
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "{{PLUGIN_NAMESPACE}}\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "{{PLUGIN_NAMESPACE}}\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "wp-scoper": {
+      "namespace_prefix": "{{PLUGIN_NAMESPACE}}\\Dependencies",
+      "packages": [],
+      "target_directory": "packages",
+      "delete_vendor_packages": true,
+      "exclude_directories": ["views", "templates", "resources", "public"]
+    }
+  },
+  "scripts": {
+    "test": "phpunit --testdox",
+    "dist": "bash bin/build-zip.sh"
+  },
+  "config": {
+    "platform-check": false,
+    "platform": {
+      "php": "{{MIN_PHP}}"
+    },
+    "allow-plugins": {
+      "veronalabs/wp-scoper": true
+    }
+  }
+}

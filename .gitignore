@@ -1,0 +1,7 @@
+/node_modules
+/vendor
+/dist
+/packages
+.DS_Store
+.phpunit.result.cache
+/public/
