@@ -10,8 +10,8 @@
  * Domain Path: /public/languages
  * Requires at least: {{MIN_WP}}
  * Requires PHP: {{MIN_PHP}}
- * License: GPL-2.0+
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  */
 
 defined('ABSPATH') || exit;

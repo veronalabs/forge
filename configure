@@ -187,16 +187,31 @@ done
 
 echo -e "  ${GREEN}✓${NC} Replaced placeholders"
 
+# ─── Update composer.json files ──────────────────────────────────────
+# composer.json uses real defaults (not {{}} placeholders) so Packagist
+# can parse the template repo. We replace those defaults here.
+
+for cfile in composer.json premium/composer.json; do
+    if [[ -f "$cfile" ]]; then
+        sed -i '' \
+            -e "s|veronalabs/forge|veronalabs/${PLUGIN_SLUG}|g" \
+            -e "s|veronalabs/forge-premium|veronalabs/${PLUGIN_SLUG}-premium|g" \
+            -e "s|VeronaLabs WordPress plugin starter template|${SED_PLUGIN_DESCRIPTION}|g" \
+            -e "s|Premium features for VeronaLabs plugin|Premium features for ${PLUGIN_NAME}|g" \
+            -e "s|ForgeStarter|${PLUGIN_NAMESPACE}|g" \
+            -e "s|\"php\": \">=7.4\"|\"php\": \">=${MIN_PHP}\"|g" \
+            -e "s|\"php\": \"7.4\"|\"php\": \"${MIN_PHP}\"|g" \
+            "$cfile"
+    fi
+done
+
+sed -i '' "s|\"type\": \"project\"|\"type\": \"wordpress-plugin\"|g" composer.json
+echo -e "  ${GREEN}✓${NC} Updated composer.json"
+
 # ─── Rename main plugin file ────────────────────────────────────────
 
 mv "plugin-name.php" "${PLUGIN_SLUG}.php"
 echo -e "  ${GREEN}✓${NC} Renamed plugin-name.php → ${PLUGIN_SLUG}.php"
-
-# ─── Update composer package name ────────────────────────────────────
-
-sed -i '' "s|veronalabs/forge|veronalabs/${PLUGIN_SLUG}|g" composer.json
-sed -i '' "s|\"type\": \"project\"|\"type\": \"wordpress-plugin\"|g" composer.json
-echo -e "  ${GREEN}✓${NC} Updated composer.json"
 
 # ─── Set up premium plugin ──────────────────────────────────────────
 

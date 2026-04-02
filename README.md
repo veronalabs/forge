@@ -90,4 +90,4 @@ pro/modules/my-feature/
 
 ## License
 
-GPL-2.0+
+MIT

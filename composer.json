@@ -1,8 +1,8 @@
 {
   "name": "veronalabs/forge",
-  "description": "{{PLUGIN_DESCRIPTION}}",
+  "description": "VeronaLabs WordPress plugin starter template",
   "type": "project",
-  "license": "GPL-2.0+",
+  "license": "MIT",
   "authors": [
     {
       "name": "VeronaLabs",
@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">={{MIN_PHP}}"
+    "php": ">=7.4"
   },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
@@ -20,17 +20,17 @@
   },
   "autoload": {
     "psr-4": {
-      "{{PLUGIN_NAMESPACE}}\\": "src/"
+      "ForgeStarter\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "{{PLUGIN_NAMESPACE}}\\Tests\\": "tests/"
+      "ForgeStarter\\Tests\\": "tests/"
     }
   },
   "extra": {
     "wp-scoper": {
-      "namespace_prefix": "{{PLUGIN_NAMESPACE}}\\Dependencies",
+      "namespace_prefix": "ForgeStarter\\Dependencies",
       "packages": [],
       "target_directory": "packages",
       "delete_vendor_packages": true,
@@ -44,7 +44,7 @@
   "config": {
     "platform-check": false,
     "platform": {
-      "php": "{{MIN_PHP}}"
+      "php": "7.4"
     },
     "allow-plugins": {
       "veronalabs/wp-scoper": true

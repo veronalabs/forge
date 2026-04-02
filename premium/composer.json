@@ -1,8 +1,8 @@
 {
-  "name": "veronalabs/{{PLUGIN_SLUG}}-premium",
-  "description": "Premium features for {{PLUGIN_NAME}}",
+  "name": "veronalabs/forge-premium",
+  "description": "Premium features for VeronaLabs plugin",
   "type": "wordpress-plugin",
-  "license": "GPL-2.0+",
+  "license": "MIT",
   "authors": [
     {
       "name": "VeronaLabs",
@@ -11,17 +11,17 @@
     }
   ],
   "require": {
-    "php": ">={{MIN_PHP}}"
+    "php": ">=7.4"
   },
   "autoload": {
     "psr-4": {
-      "{{PLUGIN_NAMESPACE}}\\Pro\\": "pro/src/"
+      "ForgeStarter\\Pro\\": "pro/src/"
     }
   },
   "config": {
     "platform-check": false,
     "platform": {
-      "php": "{{MIN_PHP}}"
+      "php": "7.4"
     }
   }
 }
